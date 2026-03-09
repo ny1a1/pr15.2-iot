@@ -1,0 +1,25 @@
+name: Validate OpenHAB Config
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install validators
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yamllint jsonlint
+          pip install pylint
+          npm install -g eslint
+      - name: YAML/JSON validation
+        run: yamllint openhab_conf && jsonlint -q openhab_conf/*.json || true
+      - name: Lint Python/JS rules
+        run: |
+          pylint rules/*.py || true
+          eslint rules/*.js || true
+      - name: Validate OpenHAB items/things/sitemaps
+        run: |
+          yamllint openhab_conf/items || true
+          yamllint openhab_conf/things || true
+          yamllint openhab_conf/sitemaps || true

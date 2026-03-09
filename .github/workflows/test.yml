@@ -1,0 +1,12 @@
+name: Run Tests
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install pytest
+      - name: Run all tests
+        run: pytest tests
